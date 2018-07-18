@@ -23,16 +23,16 @@ class Command(object):
         response = "<@" + user + ">: "
         
         if ('food' in command) or ('ate' in command):
-            if re.search(r'\d+', command):
-                self.ammount['current'] = float(re.search(r'\d+', command).group())
+            if re.search(r'[+-]*\d+', command) is not None:
+                self.ammount['current'] = int(re.search(r'[+-]*\d+', command).group())
                 self.ammount['food'] += self.ammount['current']
                 response += self.commands['food']()
             else:
                 response += "Sorry, you need to provide a quantity."
         
         elif ('home' in command) or ('house' in command):
-            if re.search(r'\d+', command):
-                self.ammount['current'] = float(re.search(r'\d+', command).group())
+            if re.search(r'[+-]*\d+', command) is not None:
+                self.ammount['current'] = int(re.search(r'[+-]*\d+', command).group())
                 self.ammount['home'] += self.ammount['current']
                 response += self.commands['home']()
             else:
