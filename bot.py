@@ -11,7 +11,8 @@ from slackclient import SlackClient
 class Bot(object):
     """ Class that implements and initializes bot API connection """
     def __init__(self):
-        """ Constructor """
+        """ Authentication with OAuth """
+        # Get verification token stored as an enviromental variable
         self.verif_token = os.environ.get("MYTOKEN")
         self.slack_client = SlackClient(self.verif_token)
         self.bot_name = "gotbot"
