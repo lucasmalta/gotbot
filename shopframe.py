@@ -34,10 +34,17 @@ class ShopFrame(object):
             current data frame.  
         """
         temp_data = [user, date] + [0]*len(self.types[2:])
-        index = [i for i, s in enumerate(self.types) if typex in s]
-        temp_data[index[0]] = ammount
-        temp_df = pd.DataFrame([temp_data], columns=self.types)
-        self.df = self.df.append(temp_df)
+        try:
+            index = self.types.index(typex)
+        except ValueError:
+            print "Unkown class " + typex
+        else:
+            temp_data[index] = ammount
+            temp_df = pd.DataFrame([temp_data], columns=self.types)
+            self.df = self.df.append(temp_df)
+            # Add to file
+            self.df.to_csv(self.csv_file)
+            return 0
 
     def get_grand_total(self):
         """ Get grand frame total """
