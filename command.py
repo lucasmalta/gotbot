@@ -5,50 +5,69 @@ Slack Command class: defines the action for each event
 """
 
 import re
-import shopframe
 import datetime
+import shopframe
 
 class Command(object):
     """ Class for commands"""
     def __init__(self):
         """ Constructor """
         self.commands = { 
-            "food" : self.food,
+            "add_amount" : self.add_amount,
+            "grand_total" : self.grand_total,
             "help" : self.help
         }
-        self.file_csv = '~/GIT/gotbot/luc.csv'
+        self.file_csv = '~/GIT/gotbot/gotbot.csv'
         self.myshop = shopframe.ShopFrame(self.file_csv)
  
     def handle_command(self, user, command):
         """ Parse command text """
         response = "<@" + user + ">: "
-        
-        if ('food' in command) or ('ate' in command):
-            if re.search(r'[+-]*\d+', command) is not None:
-                ammount = int(re.search(r'[+-]*\d+', command).group())
-                response += self.commands['food'](user, ammount)
-            else:
-                response += "Sorry, you need to provide a quantity."
-        
-             
+        command = command.lower()
+ 
+        # Parse for different categories       
+        # FOOD - GENERAL
+        if ('food' in command) or ('super' in command) or ('supermarket' in command):
+            response += self.add_amount(user, command, 'food')
+        elif ('home' in command) or ('house' in command) or ('casa' in command):
+            response += self.add_amount(user, command, 'home')
+        elif ('travel' in command) or ('trip' in command) or ('hotel' in command) or\
+           ('ticket' in command):
+            response += self.add_amount(user, command, 'travel')
+        elif ('bar' in command) or ('restaurant' in command):
+            response += self.add_amount(user, command, 'bar')
+        elif ('misc' in command) or ('other' in command):
+            response += self.add_amount(user, command, 'misc')
+        elif ('total' in command) or ('tot' in command):
+            response += self.grand_total()
+
         else:
             response += "Sorry I don't understand the command: " + command + ". " + self.help()
-        return response
+        return response 
 
 
-    def food(self, user, ammount):
-        """ What do do when food-related keywords are found within command """
+    def add_amount(self, user, command, typex):
+        """ What do do when keywords are found within command """
+        if re.search(r'[+-]*\d+', command) is not None:
+            amount = int(re.search(r'[+-]*\d+', command).group())
+        else:
+            response += "Sorry, you need to provide a quantity."
         date = datetime.datetime.today().strftime('%Y%m%d')
         # Add amount to DataFrame
         try:
-            self.myshop.add_data_point(user,'Food', date, ammount)
+            self.myshop.add_data_point(user, typex, date, amount)
             new_total = self.myshop.get_grand_total()
-        except:
+        except ValueError:
             print "Error adding value to DF"
         else:
-            return "OK! Adding {} in food. New total is: {}".format(ammount, new_total['Food'])
-         
-     
+            return "OK! Adding {} in {}. New total is: {}".format(amount, typex, new_total[typex])
+    
+    def grand_total(self):
+        """ What do do when keyword "total" is found within command """
+        total = self.myshop.get_grand_total()
+        return '\n' + str(total).split('dtype')[0]
+
+ 
     def help(self):
         """ What do do when help keyword is found within command """
         response = "Currently I support the following commands:\r\n"
