@@ -23,8 +23,8 @@ import pandas as pd
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = ['Lucas', 20180707, 0,0]
-df = pd.DataFrame([data], columns = ['User', 'Date', 'Food', 'Home'])
+data = ['lucas', 20180707, 0,0]
+df = pd.DataFrame([data], columns = ['user', 'date', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 
 # Read test data
@@ -35,59 +35,59 @@ class AddPoint(unittest.TestCase):
   
     def test_a_add_point(self):
         """ Test add point """
-        self.assertEqual(myshop.add_data_point('Lucas','Food', 20180705, 10),0)
+        self.assertEqual(myshop.add_data_point('lucas','food', 20180705, 10),0)
 
     def test_b__get_grand_total_food(self):
         """ Test total for food """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Food'], 10)
+        self.assertEqual(t['food'], 10)
     
     def test_c_get_grand_total_home(self):
         """ Test total for home """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Home'], 0)
+        self.assertEqual(t['home'], 0)
     
     def test_d_add_point(self):
         """ Test add point """
-        self.assertEqual(myshop.add_data_point('Lucas','Home', 20180705, 25),0)
+        self.assertEqual(myshop.add_data_point('lucas','home', 20180705, 25),0)
     
     def test_e_get_grand_total_food(self):
         """ Test total for food """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Food'], 10)
+        self.assertEqual(t['food'], 10)
     
     def test_f_get_grand_total_home(self):
         """ Test total for home """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Home'], 25)
+        self.assertEqual(t['home'], 25)
 
     def test_g_add_point(self):
         """ Test add point """
-        self.assertEqual(myshop.add_data_point('Lucas','Food', 20180705, 10),0)
+        self.assertEqual(myshop.add_data_point('lucas','food', 20180705, 10),0)
     
     def test_h_get_grand_total_food(self):
         """ Test total for food """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Food'], 20)
+        self.assertEqual(t['food'], 20)
     
     def test_i_get_grand_total_home(self):
         """ Test total for home """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Home'], 25)
+        self.assertEqual(t['home'], 25)
 
     def test_j_add_point(self):
         """ Test add point """
-        self.assertEqual(myshop.add_data_point('Lucas','Food', 20180705, -30),0)
+        self.assertEqual(myshop.add_data_point('lucas','food', 20180705, -30),0)
     
     def test_k_get_grand_total_food(self):
         """ Test total for food """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Food'], -10)
+        self.assertEqual(t['food'], -10)
     
     def test_l_get_grand_total_home(self):
         """ Test total for home """
         t = myshop.get_grand_total()
-        self.assertEqual(t['Home'], 25)
+        self.assertEqual(t['home'], 25)
 
 
 
