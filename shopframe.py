@@ -3,19 +3,13 @@
 Data frame for handling shop data
 
 """
-
-import re
 import pandas as pd
-import numpy as np
 
 class ShopFrame(object):
     """ Class for handling shop data """
 
     def __init__(self, csv_file):
         """ Initialization """
-        #allowed_keys = ['user', 'typex', 'date', 'ammount','csv_file']
-        #self.__dict__.update((k, v) for k, v in kwargs.items()\
-        #if k in allowed_keys)
         
         self.csv_file = csv_file
         self.df = pd.DataFrame()
@@ -43,7 +37,7 @@ class ShopFrame(object):
             temp_df = pd.DataFrame([temp_data], columns=self.types)
             self.df = self.df.append(temp_df)
             # Add to file
-            self.df.to_csv(self.csv_file)
+            self.df.to_csv(self.csv_file, index=False)
             return 0
 
     def get_grand_total(self):
@@ -52,9 +46,3 @@ class ShopFrame(object):
         # types[2:] excludes User/Date
         grand_total = self.df.loc[:, self.types[2:]].sum()
         return grand_total
-        #for stype in self.types[2:]:
-            #print '{}:{}'.format(stype, grand_total[stype])
-
-
- #  def get_grand_user_total(self):
-#        """ Get grand total for a user """
