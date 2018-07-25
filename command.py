@@ -5,18 +5,19 @@ Slack Command class: defines the action for each event
 """
 
 import re
+import shopframe
+import datetime
 
 class Command(object):
     """ Class for commands"""
     def __init__(self):
         """ Constructor """
         self.commands = { 
-            "home" : self.home,
             "food" : self.food,
-            "total" : self.total,
             "help" : self.help
         }
-        self.ammount = {'current': 0, 'food':0, 'home':0}
+        self.file_csv = '~/GIT/gotbot/luc.csv'
+        self.myshop = shopframe.ShopFrame(self.file_csv)
  
     def handle_command(self, user, command):
         """ Parse command text """
@@ -24,41 +25,29 @@ class Command(object):
         
         if ('food' in command) or ('ate' in command):
             if re.search(r'[+-]*\d+', command) is not None:
-                self.ammount['current'] = int(re.search(r'[+-]*\d+', command).group())
-                self.ammount['food'] += self.ammount['current']
-                response += self.commands['food']()
+                ammount = int(re.search(r'[+-]*\d+', command).group())
+                response += self.commands['food'](user, ammount)
             else:
                 response += "Sorry, you need to provide a quantity."
         
-        elif ('home' in command) or ('house' in command):
-            if re.search(r'[+-]*\d+', command) is not None:
-                self.ammount['current'] = int(re.search(r'[+-]*\d+', command).group())
-                self.ammount['home'] += self.ammount['current']
-                response += self.commands['home']()
-            else:
-                response += "Sorry, you need to provide a quantity."
-        
-        elif 'total' in command:
-            response += self.commands['total']()
              
         else:
             response += "Sorry I don't understand the command: " + command + ". " + self.help()
         return response
 
-    def food(self):
+
+    def food(self, user, ammount):
         """ What do do when food-related keywords are found within command """
-        return "OK! Adding {} in food. New total is: {}"\
-        .format(self.ammount['current'], self.ammount['food'])
+        date = datetime.datetime.today().strftime('%Y%m%d')
+        # Add amount to DataFrame
+        try:
+            self.myshop.add_data_point(user,'Food', date, ammount)
+            new_total = self.myshop.get_grand_total()
+        except:
+            print "Error adding value to DF"
+        else:
+            return "OK! Adding {} in food. New total is: {}".format(ammount, new_total['Food'])
          
-    def home(self):
-        """ What do do when home-related keywords are found within command """
-        return "OK! Adding {} in home. New total is: {}"\
-        .format(self.ammount['current'], self.ammount['home'])
-    
-    def total(self):
-        """ What do do when total keyword is found within command """
-        return "Right. The total so far is: \n Food: {} \n Home: {}".\
-        format(self.ammount['food'], self.ammount['home'])
      
     def help(self):
         """ What do do when help keyword is found within command """
