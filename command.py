@@ -6,7 +6,11 @@ Slack Command class: defines the action for each event
 
 import re
 import datetime
+import matplotlib.pyplot as plt
+import os
+import commands
 import shopframe
+
 
 class Command(object):
     """ Class for commands"""
@@ -15,12 +19,14 @@ class Command(object):
         self.commands = { 
             "add_amount" : self.add_amount,
             "grand_total" : self.grand_total,
+            "plot" : self.plot,
             "help" : self.help
         }
-        self.file_csv = '~/GIT/gotbot/gotbot.csv'
+        self.root_folder = '/home/lucas/GIT/gotbot/'
+        self.file_csv = self.root_folder + 'gotbot.csv'
         self.myshop = shopframe.ShopFrame(self.file_csv)
  
-    def handle_command(self, user, command):
+    def handle_command(self, user, command, channel):
         """ Parse command text """
         response = "<@" + user + ">: "
         command = command.lower()
@@ -40,6 +46,8 @@ class Command(object):
             response += self.add_amount(user, command, 'misc')
         elif ('total' in command) or ('tot' in command):
             response += self.grand_total()
+        elif ('plot' in command) or ('plt' in command):
+            response += self.plot(channel)
 
         else:
             response += "Sorry I don't understand the command: " + command + ". " + self.help()
@@ -66,6 +74,27 @@ class Command(object):
         """ What do do when keyword "total" is found within command """
         total = self.myshop.get_grand_total()
         return '\n' + str(total).split('dtype')[0]
+    
+    def plot(self, channel):
+        """ Plotting capability """
+        total = self.myshop.get_grand_total()
+        D = total.to_dict()
+        plt.bar(range(len(D)), D.values(), align='center', color='black')
+        plt.xticks(range(len(D)), list(D.keys()))
+        plt.ylabel('SEK',fontsize=11)
+        plt.xlabel('Category',fontsize=11)
+        plt.savefig('imgs/foo.png')
+        verif_token = os.getenv('MYTOKEN')
+        cmd = 'curl -F file=@' + self.root_folder + 'imgs/foo.png -F \
+        channels=' + channel + ' -H "Authorization: Bearer ' + verif_token + '" \
+        https://slack.com/api/files.upload'
+        (status, output) = commands.getstatusoutput(cmd)
+        match = re.search(r'"ok":(\w+),',output)
+        if match:
+            if 'true' not in match.group(1): 
+                return 'Could not plot, sorry'
+        else: return 'Could not plot, sorry'
+        return 'Done.'
 
  
     def help(self):
