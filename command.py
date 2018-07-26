@@ -51,15 +51,19 @@ class Command(object):
         elif ('misc' in command) or ('other' in command):
             response += self.add_amount(user, command, 'misc')
         elif ('total' in command) or ('tot' in command):
-            # Look for specific date ranges
-            # Adding ' ' to workaround a bug in datefinder
-            match = datefinder.find_dates(' ' + command + ' ')
-            try:
-                date_in = match.next()
-            except:
-                response += self.grand_total()
+            if ('month' in command) or ('current' in command) or ('now' in command):
+                # Total for present month
+                response += self.total_by_month(command, datetime.date.today())
             else:
-                response += self.total_by_month(command, date_in)
+                # Look for specific dates
+                # Adding ' ' as a workaround for a bug in datefinder
+                match = datefinder.find_dates(' ' + command + ' ')
+                try:
+                    date_in = match.next()
+                except:
+                    response += self.grand_total()
+                else:
+                    response += self.total_by_month(command, date_in)
         elif ('plot' in command) or ('plt' in command):
             response += self.plot(channel)
 
