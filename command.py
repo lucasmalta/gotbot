@@ -82,12 +82,12 @@ class Command(object):
         except ValueError:
             print "Error adding value to DF"
         else:
-            return "OK! Adding {} in {}. New total is: {}".format(amount, typex, new_total[typex])
+            return "OK! Adding {} in {} :cow2:. New total is: {}".format(amount, typex, new_total[typex])
     
     def grand_total(self):
         """ What do do when keyword "total" is found within command """
         total = self.myshop.get_grand_total()
-        return '\nGrand total (all data):\n' + str(total).split('dtype')[0]
+        return '\nGrand total (*ALL DATA*):\n' + str(total).split('dtype')[0]
     
     def total_by_month(self, command, date):
         """ What do do when keyword "total" is found within command
@@ -95,7 +95,7 @@ class Command(object):
         min_date = str(date.year) + '{:02d}'.format(date.month) + '01'
         max_date = str(date.year) + '{:02d}'.format(date.month) + '31'
         total = self.myshop.get_total_by_date(min_date, max_date)
-        return '\nTotal for month ' + str(date.month) + ', year: ' + str(date.year) + '\n'\
+        return '\nTotal for *' + date.strftime("%B") + '*, *' + str(date.year) + '*\n'\
         + str(total).split('dtype')[0]
     
     def plot(self, channel):
