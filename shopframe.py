@@ -46,3 +46,13 @@ class ShopFrame(object):
         # types[2:] excludes User/Date
         grand_total = self.df.loc[:, self.types[2:]].sum()
         return grand_total
+    
+    def get_total_by_date(self, min_date, max_date):
+        """ Get grand frame total """
+        # Creates a filtered data frame for the specified data range
+        new_df = self.df.loc[(self.df['date'] >= int(min_date) ) &\
+        (self.df['date'] <= int(max_date))]
+        # Total from the columns which have shopping ammounts
+        # types[2:] excludes User/Date
+        grand_total = new_df.loc[:, self.types[2:]].sum()
+        return grand_total
