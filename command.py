@@ -9,12 +9,13 @@ import datetime
 import matplotlib.pyplot as plt
 import os
 import commands
+import sys
 import shopframe
 
 
 class Command(object):
     """ Class for commands"""
-    def __init__(self):
+    def __init__(self, *argv):
         """ Constructor """
         self.commands = { 
             "add_amount" : self.add_amount,
@@ -23,7 +24,10 @@ class Command(object):
             "help" : self.help
         }
         self.root_folder = '/home/lucas/GIT/gotbot/'
-        self.file_csv = self.root_folder + 'gotbot.csv'
+        if argv:
+            self.file_csv = argv[0]
+        else:
+            self.file_csv = self.root_folder + 'gotbot.csv'
         self.myshop = shopframe.ShopFrame(self.file_csv)
  
     def handle_command(self, user, command, channel):
@@ -60,7 +64,7 @@ class Command(object):
         if re.search(r'[+-]*\d+', command) is not None:
             amount = int(re.search(r'[+-]*\d+', command).group())
         else:
-            response += "Sorry, you need to provide a quantity."
+            return "Sorry, you need to provide a quantity."
         date = datetime.datetime.today().strftime('%Y%m%d')
         # Add amount to DataFrame
         try:
