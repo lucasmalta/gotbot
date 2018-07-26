@@ -33,7 +33,8 @@ class Command(object):
  
         # Parse for different categories       
         # FOOD - GENERAL
-        if ('food' in command) or ('super' in command) or ('supermarket' in command):
+        if ('food' in command) or ('super' in command) or ('supermarket' in command)\
+           or ('groceries' in command):
             response += self.add_amount(user, command, 'food')
         elif ('home' in command) or ('house' in command) or ('casa' in command):
             response += self.add_amount(user, command, 'home')
