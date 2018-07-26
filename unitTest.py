@@ -14,7 +14,40 @@ import pandas as pd
 #  COMMAND TEST PROCEDURE    #
 ##############################
 
-#myCom = command.Command()
+# Create test data
+file_csv = '~/GIT/gotbot/test.csv'
+data = ['lucas', 20180707, 0,0]
+df = pd.DataFrame([data], columns = ['user', 'date', 'food', 'home'])
+df.to_csv(file_csv, index_label=False)
+channel = 'CBTCHEDGE'
+myCom = command.Command(file_csv)
+
+class AddCommand(unittest.TestCase):
+    """ Test case for command.py -- Adding data """
+  
+    def test_a_add_comm(self):
+        """ Test add point """
+        self.assertEqual(myCom.handle_command('luc','food 5', channel), '<@luc>: OK! Adding 5 in food. New total is: 5')
+    
+    def test_b_add_comm(self):
+        """ Test add point """
+        self.assertEqual(myCom.handle_command('luc','food 15', channel), '<@luc>: OK! Adding 15 in food. New total is: 20')
+    
+    def test_c_add_comm(self):
+        """ Test add point """
+        self.assertEqual(myCom.handle_command('luc','house 15', channel), '<@luc>: OK! Adding 15 in home. New total is: 15')
+    
+    def test_d_add_comm(self):
+        """ Test add point """
+        self.assertEqual(myCom.handle_command('luc','house 0', channel), '<@luc>: OK! Adding 0 in home. New total is: 15')
+
+    def test_e_total(self):
+        """ Total """
+        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nfood    20\nhome    15\n')
+
+
+
+
 
 
 ##############################
