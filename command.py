@@ -6,6 +6,7 @@ Slack Command class: defines the action for each event
 
 import re
 import datetime
+import datefinder
 import matplotlib.pyplot as plt
 import os
 import commands
@@ -50,7 +51,15 @@ class Command(object):
         elif ('misc' in command) or ('other' in command):
             response += self.add_amount(user, command, 'misc')
         elif ('total' in command) or ('tot' in command):
-            response += self.grand_total()
+            # Look for specific date ranges
+            # Adding ' ' to workaround a bug in datefinder
+            match = datefinder.find_dates(' ' + command + ' ')
+            try:
+                date_in = match.next()
+            except:
+                response += self.grand_total()
+            else:
+                response += self.total_by_month(command, date_in)
         elif ('plot' in command) or ('plt' in command):
             response += self.plot(channel)
 
@@ -78,10 +87,21 @@ class Command(object):
     def grand_total(self):
         """ What do do when keyword "total" is found within command """
         total = self.myshop.get_grand_total()
-        return '\n' + str(total).split('dtype')[0]
+        return '\nGrand total (all data):\n' + str(total).split('dtype')[0]
+    
+    def total_by_month(self, command, date):
+        """ What do do when keyword "total" is found within command
+            AND we have a date """
+        min_date = str(date.year) + '{:02d}'.format(date.month) + '01'
+        max_date = str(date.year) + '{:02d}'.format(date.month) + '31'
+        total = self.myshop.get_total_by_date(min_date, max_date)
+        return '\nTotal for month ' + str(date.month) + ', year: ' + str(date.year) + '\n'\
+        + str(total).split('dtype')[0]
     
     def plot(self, channel):
-        """ Plotting capability """
+        """ Plotting capability. It saves a matplotlib image file to disk and
+            uploads it to Slack. 
+        """
         total = self.myshop.get_grand_total()
         D = total.to_dict()
         plt.bar(range(len(D)), D.values(), align='center', color='black')
