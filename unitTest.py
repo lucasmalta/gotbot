@@ -41,7 +41,11 @@ class AddCommand(unittest.TestCase):
         """ Test add point """
         self.assertEqual(myCom.handle_command('luc','house 0', channel), '<@luc>: OK! Adding 0 in home. New total is: 15')
 
-    def test_e_total(self):
+    def test_e_add_comm(self):
+        """ Test empty """
+        self.assertEqual(myCom.handle_command('luc','house', channel), '<@luc>: Sorry, you need to provide a quantity.')
+    
+    def test_f_total(self):
         """ Total """
         self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nfood    20\nhome    15\n')
 
