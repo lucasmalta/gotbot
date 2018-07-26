@@ -33,6 +33,6 @@ class Event:
         if xcommand and channel:
             print "Received command: " + xcommand + " in channel: " + channel +\
             " from user: " + user
-            response = self.command.handle_command(user, xcommand)
+            response = self.command.handle_command(user, xcommand, channel)
             self.bot.slack_client.api_call("chat.postMessage", channel=channel,\
             text=response, as_user=True)
