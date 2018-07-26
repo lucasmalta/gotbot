@@ -47,7 +47,7 @@ class AddCommand(unittest.TestCase):
     
     def test_f_total(self):
         """ Total """
-        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nfood    20\nhome    15\n')
+        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nGrand total (all data):\nfood    20\nhome    15\n')
 
 
 
