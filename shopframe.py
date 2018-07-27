@@ -3,6 +3,7 @@
 Data frame for handling shop data
 
 """
+import numpy as np
 import pandas as pd
 
 class ShopFrame(object):
@@ -27,15 +28,15 @@ class ShopFrame(object):
         """ Creates a new df with input data and append it to 
             current data frame.  
         """
-        temp_data = [user, date] + [0]*len(self.types[2:])
+        temp_data = [user, int(date)] + [0]*len(self.types[2:])
         try:
-            index = self.types.index(typex)
+            ind = self.types.index(typex)
         except ValueError:
             print "Unkown class " + typex
         else:
-            temp_data[index] = ammount
+            temp_data[ind] = ammount
             temp_df = pd.DataFrame([temp_data], columns=self.types)
-            self.df = self.df.append(temp_df)
+            self.df = self.df.append(temp_df, ignore_index=True)
             # Add to file
             self.df.to_csv(self.csv_file, index=False)
             return 0
@@ -48,10 +49,10 @@ class ShopFrame(object):
         return grand_total
     
     def get_total_by_date(self, min_date, max_date):
-        """ Get grand frame total """
+    #def get_total_by_date(self):
+        """ Get frame total in a date range """
         # Creates a filtered data frame for the specified data range
-        new_df = self.df.loc[(self.df['date'] >= int(min_date) ) &\
-        (self.df['date'] <= int(max_date))]
+        new_df = self.df.loc[(self.df['date'] >= int(min_date) ) & (self.df['date'] <= int(max_date))]
         # Total from the columns which have shopping ammounts
         # types[2:] excludes User/Date
         grand_total = new_df.loc[:, self.types[2:]].sum()
