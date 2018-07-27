@@ -1,0 +1,31 @@
+{
+  "food": [
+    "food",
+    "supermarket",
+    "super",
+    "comida"
+  ],
+  "home": [
+    "home",
+    "house",
+    "casa"
+  ],
+  "bar": [
+    "bar",
+    "restaurant"
+  ],
+  "travel": [
+    "travel",
+    "trip",
+    "ticket",
+    "viagem",
+    "hotel",
+    "passagem"
+  ],
+  "misc": [
+    "misc",
+    "other",
+    "others",
+    "outros"
+  ]
+}
