@@ -5,6 +5,7 @@ Slack Command class: defines the action for each event
 """
 
 import re
+import json
 import datetime
 import datefinder
 import matplotlib.pyplot as plt
@@ -25,11 +26,17 @@ class Command(object):
             "help" : self.help
         }
         self.root_folder = '/home/lucas/GIT/gotbot/'
+        self.cat_file = 'categories.json'
         if argv:
             self.file_csv = argv[0]
         else:
             self.file_csv = self.root_folder + 'gotbot.csv'
         self.myshop = shopframe.ShopFrame(self.file_csv)
+        
+        # Load json file with categories
+        with open(self.root_folder + self.cat_file) as f:   
+            self.data_cat = json.load(f)
+
  
     def handle_command(self, user, command, channel):
         """ Parse command text """
@@ -37,20 +44,12 @@ class Command(object):
         command = command.lower()
  
         # Parse for different categories       
-        # FOOD - GENERAL
-        if ('food' in command) or ('super' in command) or ('supermarket' in command)\
-           or ('groceries' in command):
-            response += self.add_amount(user, command, 'food')
-        elif ('home' in command) or ('house' in command) or ('casa' in command):
-            response += self.add_amount(user, command, 'home')
-        elif ('travel' in command) or ('trip' in command) or ('hotel' in command) or\
-           ('ticket' in command):
-            response += self.add_amount(user, command, 'travel')
-        elif ('bar' in command) or ('restaurant' in command):
-            response += self.add_amount(user, command, 'bar')
-        elif ('misc' in command) or ('other' in command):
-            response += self.add_amount(user, command, 'misc')
-        elif ('total' in command) or ('tot' in command):
+        for key, value in self.data_cat.iteritems():
+            if any([x in command for x in value]):
+                response += self.add_amount(user, command, key)
+      
+        # Parse for total
+        if ('total' in command) or ('tot' in command):
             if ('month' in command) or ('current' in command) or ('now' in command):
                 # Total for present month
                 response += self.total_by_month(command, datetime.date.today())
@@ -64,11 +63,13 @@ class Command(object):
                     response += self.grand_total()
                 else:
                     response += self.total_by_month(command, date_in)
-        elif ('plot' in command) or ('plt' in command):
-            response += self.plot(channel)
+        
+        # Parse for plot
+        if ('plot' in command) or ('plt' in command):
+            self.plot(channel)
 
-        else:
-            response += "Sorry I don't understand the command: " + command + ". " + self.help()
+        #else:
+        #    response += "Sorry I don't understand the command: " + command + ". " + self.help()
         return response 
 
 
@@ -86,7 +87,7 @@ class Command(object):
         except ValueError:
             print "Error adding value to DF"
         else:
-            return "OK! Adding {} in {} :cow2:. New total is: {}".format(amount, typex, new_total[typex])
+            return "OK! Adding {} in {}.".format(amount, typex)
     
     def grand_total(self):
         """ What do do when keyword "total" is found within command """
@@ -98,6 +99,7 @@ class Command(object):
             AND we have a date """
         min_date = str(date.year) + '{:02d}'.format(date.month) + '01'
         max_date = str(date.year) + '{:02d}'.format(date.month) + '31'
+        #print '{} {}'.format(min_date, max_date)
         total = self.myshop.get_total_by_date(min_date, max_date)
         return '\nTotal for *' + date.strftime("%B") + '*, *' + str(date.year) + '*\n'\
         + str(total).split('dtype')[0]
