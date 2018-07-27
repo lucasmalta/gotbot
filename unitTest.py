@@ -16,8 +16,8 @@ import pandas as pd
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = ['lucas', 20180707, 0,0]
-df = pd.DataFrame([data], columns = ['user', 'date', 'food', 'home'])
+data = [['lucas', 20180707, 0,0], ['lucas', 20180607, 10,0]]
+df = pd.DataFrame(data, columns = ['user', 'date', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 channel = 'CBTCHEDGE'
 myCom = command.Command(file_csv)
@@ -27,19 +27,19 @@ class AddCommand(unittest.TestCase):
   
     def test_a_add_comm(self):
         """ Test add point """
-        self.assertEqual(myCom.handle_command('luc','food 5', channel), '<@luc>: OK! Adding 5 in food. New total is: 5')
+        self.assertEqual(myCom.handle_command('luc','food 5', channel), '<@luc>: OK! Adding 5 in food.')
     
     def test_b_add_comm(self):
         """ Test add point """
-        self.assertEqual(myCom.handle_command('luc','food 15', channel), '<@luc>: OK! Adding 15 in food. New total is: 20')
+        self.assertEqual(myCom.handle_command('luc','food 15', channel), '<@luc>: OK! Adding 15 in food.')
     
     def test_c_add_comm(self):
         """ Test add point """
-        self.assertEqual(myCom.handle_command('luc','house 15', channel), '<@luc>: OK! Adding 15 in home. New total is: 15')
+        self.assertEqual(myCom.handle_command('luc','house 15', channel), '<@luc>: OK! Adding 15 in home.')
     
     def test_d_add_comm(self):
         """ Test add point """
-        self.assertEqual(myCom.handle_command('luc','house 0', channel), '<@luc>: OK! Adding 0 in home. New total is: 15')
+        self.assertEqual(myCom.handle_command('luc','house 0', channel), '<@luc>: OK! Adding 0 in home.')
 
     def test_e_add_comm(self):
         """ Test empty """
@@ -47,7 +47,26 @@ class AddCommand(unittest.TestCase):
     
     def test_f_total(self):
         """ Total """
-        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nGrand total (all data):\nfood    20\nhome    15\n')
+        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nGrand total (*ALL DATA*):\nfood    30\nhome    15\n')
+    
+    def test_g_total_july(self):
+        """ Total july """
+        self.assertEqual(myCom.handle_command('luc','total july', channel), '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
+    
+    def test_h_total_june(self):
+        """ Total june """
+        self.assertEqual(myCom.handle_command('luc','total june', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+    
+    def test_i_total_june2(self):
+        """ Total june 06/2018 """
+        self.assertEqual(myCom.handle_command('luc','total 06/2018', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+    def test_j_total_june3(self):
+        """ Total june 06/18 """
+        self.assertEqual(myCom.handle_command('luc','total 06/18', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+    
+    def test_k_total_may(self):
+        """ Total may 18 """
+        self.assertEqual(myCom.handle_command('luc','total may 18', channel), '<@luc>: \nTotal for *May*, *2018*\nfood    0.0\nhome    0.0\n')
 
 
 
