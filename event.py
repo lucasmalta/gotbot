@@ -1,4 +1,4 @@
-#!/home/lucas/anaconda2/bin/pytho
+#!/home/lucas/anaconda2/bin/python
 """
 Slack Event class
 
