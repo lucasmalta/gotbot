@@ -1,9 +1,8 @@
-#!/home/lucas/anaconda2/bin/pytho
+#!/home/lucas/anaconda2/bin/python
 """
 Slack Command class: defines the action for each event
 
 """
-
 import re
 import json
 import datetime
@@ -49,10 +48,13 @@ class Command(object):
                 response += self.add_amount(user, command, key)
       
         # Parse for total
-        if ('total' in command) or ('tot' in command):
+        if ('total' in command):
+            arg_user = ''
+            if ('me' in command) or ('my' in command):
+                arg_user = user
             if ('month' in command) or ('current' in command) or ('now' in command):
                 # Total for present month
-                response += self.total_by_month(command, datetime.date.today())
+                response += self.total_by_month(command, mydate = datetime.date.today(), myuser = arg_user)
             else:
                 # Look for specific dates
                 # Adding ' ' as a workaround for a bug in datefinder
@@ -60,9 +62,9 @@ class Command(object):
                 try:
                     date_in = match.next()
                 except:
-                    response += self.grand_total()
+                    response += self.grand_total(myuser=arg_user)
                 else:
-                    response += self.total_by_month(command, date_in)
+                    response += self.total_by_month(command, mydate = date_in, myuser = arg_user)
         
         # Parse for plot
         if ('plot' in command) or ('plt' in command):
@@ -89,19 +91,29 @@ class Command(object):
         else:
             return "OK! Adding {} in {}.".format(amount, typex)
     
-    def grand_total(self):
+    def grand_total(self, **kwargs):
         """ What do do when keyword "total" is found within command """
-        total = self.myshop.get_grand_total()
+        if ('myuser' in kwargs) and kwargs['myuser']:
+            total = self.myshop.get_grand_total(user=kwargs['myuser'])
+        else:
+            total = self.myshop.get_grand_total()
         return '\nGrand total (*ALL DATA*):\n' + str(total).split('dtype')[0]
     
-    def total_by_month(self, command, date):
+    def total_by_month(self, command, **kwargs):
         """ What do do when keyword "total" is found within command
             AND we have a date """
-        min_date = str(date.year) + '{:02d}'.format(date.month) + '01'
-        max_date = str(date.year) + '{:02d}'.format(date.month) + '31'
-        #print '{} {}'.format(min_date, max_date)
-        total = self.myshop.get_total_by_date(min_date, max_date)
-        return '\nTotal for *' + date.strftime("%B") + '*, *' + str(date.year) + '*\n'\
+        if ('mydate' in kwargs):
+            min_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '01'
+            max_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '31'
+        else: 
+            return "Error in total by month. Need to specify date range"
+        
+        if ('myuser' in kwargs) and kwargs['myuser']:
+            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date, user=kwargs['myuser'])
+        else:   
+            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date)
+       
+        return '\nTotal for *' + kwargs['mydate'].strftime("%B") + '*, *' + str(kwargs['mydate'].year) + '*\n'\
         + str(total).split('dtype')[0]
     
     def plot(self, channel):
