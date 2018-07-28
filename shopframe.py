@@ -1,4 +1,4 @@
-#!/home/lucas/anaconda2/bin/pytho
+#!/home/lucas/anaconda2/bin/python
 """
 Data frame for handling shop data
 
@@ -41,18 +41,32 @@ class ShopFrame(object):
             self.df.to_csv(self.csv_file, index=False)
             return 0
 
-    def get_grand_total(self):
+    def get_grand_total(self, **kwargs):
         """ Get grand frame total """
-        # Total from the columns which have shopping ammounts
-        # types[2:] excludes User/Date
-        grand_total = self.df.loc[:, self.types[2:]].sum()
+        if ('user' in kwargs):
+            mask = (self.df['user'] == kwargs['user'])
+            grand_total = self.df.loc[mask, self.types[2:]].sum()
+        else:    
+            # Total from the columns which have shopping ammounts
+            # types[2:] excludes User/Date
+            grand_total = self.df.loc[:, self.types[2:]].sum()
         return grand_total
     
-    def get_total_by_date(self, min_date, max_date):
-    #def get_total_by_date(self):
+    def get_total_by_date(self, **kwargs):
         """ Get frame total in a date range """
-        # Creates a filtered data frame for the specified data range
-        new_df = self.df.loc[(self.df['date'] >= int(min_date) ) & (self.df['date'] <= int(max_date))]
+        if ('min_date' in kwargs) and ('max_date' in kwargs):
+            if ('user' in kwargs):
+                # Creates a filtered data frame for the specified data range and user
+                mask = (self.df['date'] >= int(kwargs['min_date'])) &\
+                       (self.df['date'] <= int(kwargs['max_date'])) &\
+                       (self.df['user'] == kwargs['user']) 
+            else: 
+                # Creates a filtered data frame for the specified data range
+                mask = (self.df['date'] >= int(kwargs['min_date'])) &\
+                       (self.df['date'] <= int(kwargs['max_date']))
+        else:
+            return "ERROR in slicing DF. Need to specify min_date and max_date"
+        new_df = self.df.loc[mask]
         # Total from the columns which have shopping ammounts
         # types[2:] excludes User/Date
         grand_total = new_df.loc[:, self.types[2:]].sum()
