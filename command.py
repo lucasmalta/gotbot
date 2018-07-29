@@ -92,8 +92,10 @@ class Command(object):
     
     def grand_total(self, **kwargs):
         """ What do do when keyword "total" is found within command """
+        # Total for a specific user
         if ('myuser' in kwargs) and kwargs['myuser']:
             total = self.myshop.get_grand_total(user=kwargs['myuser'])
+        # Grand total
         else:
             total = self.myshop.get_grand_total()
         return '\nGrand total (*ALL DATA*):\n' + str(total).split('dtype')[0]
@@ -101,12 +103,14 @@ class Command(object):
     def total_by_month(self, command, **kwargs):
         """ What do do when keyword "total" is found within command
             AND we have a date """
+        # Total for a specific date range
         if ('mydate' in kwargs):
             min_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '01'
             max_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '31'
         else: 
             return "Error in total by month. Need to specify date range"
-        
+       
+        # Total for a specific data range AND user
         if ('myuser' in kwargs) and kwargs['myuser']:
             total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date, user=kwargs['myuser'])
         else:   
@@ -119,6 +123,7 @@ class Command(object):
         """ Plotting capability. It saves a matplotlib image file to disk and
             uploads it to Slack. 
         """
+        # Image generation and local storage
         total = self.myshop.get_grand_total()
         D = total.to_dict()
         plt.bar(range(len(D)), D.values(), align='center', color='black')
@@ -126,6 +131,8 @@ class Command(object):
         plt.ylabel('SEK',fontsize=11)
         plt.xlabel('Category',fontsize=11)
         plt.savefig('imgs/foo.png')
+        
+        # Uploading to Slack
         verif_token = os.getenv('MYTOKEN')
         cmd = 'curl -F file=@' + self.root_folder + 'imgs/foo.png -F \
         channels=' + channel + ' -H "Authorization: Bearer ' + verif_token + '" \
@@ -141,10 +148,8 @@ class Command(object):
  
     def help(self):
         """ What do do when help keyword is found within command """
-        response = "Currently I support the following commands:\r\n"
-         
-        for command in self.commands:
-            response += command + "\r\n"
+        response = "Currently I support commands for the following categories:"
+        response += ','.join(list(self.data_cat))
              
         return response
 
