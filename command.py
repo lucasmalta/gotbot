@@ -68,6 +68,10 @@ class Command(object):
         # Parse for plot
         if ('plot' in command) or ('plt' in command):
             self.plot(channel)
+        
+        # Parse for help
+        if ('help' in command):
+            response += self.help()
 
         #else:
         #    response += "Sorry I don't understand the command: " + command + ". " + self.help()
@@ -148,8 +152,12 @@ class Command(object):
  
     def help(self):
         """ What do do when help keyword is found within command """
-        response = "Currently I support commands for the following categories:"
-        response += ','.join(list(self.data_cat))
+        response = "Good, I am here to help :smile:. Currently I support commands for the following categories: "
+        response += ', '.join(list(self.data_cat)) + '. '
+        response += 'Here are a few examples of what you can do:\n\n\
+                     *Add expense*\n -Food 300.\n -I spent 150 in a bar\n -300 in home\n\n\
+                     *View*\n -Total\n -Total this month \n -Total for 05/2018 \n -Total for me in July \n -plot '
+          
              
         return response
 
