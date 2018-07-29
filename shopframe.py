@@ -19,7 +19,7 @@ class ShopFrame(object):
     def load_data(self):
         """ Load data """
         try:
-            self.df = pd.read_csv(self.csv_file)
+            self.df = pd.read_csv(self.csv_file, na_filter=False)
         except IOError: 
             print "IO Error: Cannot open file", self.csv_file
 
@@ -44,11 +44,11 @@ class ShopFrame(object):
         """ Get grand frame total """
         if ('user' in kwargs):
             mask = (self.df['user'] == kwargs['user'])
-            grand_total = self.df.loc[mask, self.types[2:]].sum()
+            grand_total = self.df.loc[mask, self.types[3:]].sum()
         else:    
             # Total from the columns which have shopping ammounts
-            # types[2:] excludes User/Date
-            grand_total = self.df.loc[:, self.types[2:]].sum()
+            # types[3:] excludes User/Date/Tags
+            grand_total = self.df.loc[:, self.types[3:]].sum()
         return grand_total
     
     def get_total_by_date(self, **kwargs):
@@ -67,6 +67,18 @@ class ShopFrame(object):
             return "ERROR in slicing DF. Need to specify min_date and max_date"
         new_df = self.df.loc[mask]
         # Total from the columns which have shopping ammounts
-        # types[2:] excludes User/Date
-        grand_total = new_df.loc[:, self.types[2:]].sum()
+        # types[3:] excludes User/Date/Tags
+        grand_total = new_df.loc[:, self.types[3:]].sum()
         return grand_total
+    
+    def set_tag(self, tag):
+        """ Set a new tag in the tags column """
+        self.df['tags'] = [x + tag for x in self.df['tags']]
+        # Add to file
+        self.df.to_csv(self.csv_file, index=False)
+    
+    def del_tag(self, tag):
+        """ Remove a given tag in the tags column """
+        self.df['tags'] = [x.replace(tag, '') for x in self.df['tags']]
+        # Add to file
+        self.df.to_csv(self.csv_file, index=False)

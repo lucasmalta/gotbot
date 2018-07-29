@@ -17,12 +17,6 @@ class Command(object):
     """ Class for commands"""
     def __init__(self, *argv):
         """ Constructor """
-        self.commands = { 
-            "add_amount" : self.add_amount,
-            "grand_total" : self.grand_total,
-            "plot" : self.plot,
-            "help" : self.help
-        }
         self.root_folder = '/home/lucas/GIT/gotbot/'
         self.cat_file = 'categories.json'
         if argv:
@@ -68,7 +62,16 @@ class Command(object):
         # Parse for plot
         if ('plot' in command) or ('plt' in command):
             self.plot(channel)
+
+        # Parse for the paid tag -- adding re.search to avioid matching 'unpaid'
+        match_paid = re.search(r'\bpaid\b', command)
+        if (match_paid):
+            response += self.set_paid_tag()
         
+        # Parse for the upaid tag
+        if ('unpaid' in command):
+            response += self.set_unpaid_tag()
+     
         # Parse for help
         if ('help' in command):
             response += self.help()
@@ -149,10 +152,17 @@ class Command(object):
         else: return 'Could not plot, sorry'
         return 'Done.'
 
+    def set_paid_tag(self):
+        self.myshop.set_tag('_P')
+        return "Setting everything to *paid*."
+    
+    def set_unpaid_tag(self):
+        self.myshop.del_tag('_P')
+        return "Setting everything to *unpaid*."
  
     def help(self):
         """ What do do when help keyword is found within command """
-        response = "Good, I am here to help :smile:. Currently I support commands for the following categories: "
+        response = "I am here to help :smile:. Currently I support commands for the following categories: "
         response += ', '.join(list(self.data_cat)) + '. '
         response += 'Here are a few examples of what you can do:\n\n\
                      *Add expense*\n -Food 300.\n -I spent 150 in a bar\n -300 in home\n\n\

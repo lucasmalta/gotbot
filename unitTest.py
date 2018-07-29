@@ -16,8 +16,8 @@ import pandas as pd
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707, 0,0], ['ana', 20180607, 10,0]]
-df = pd.DataFrame(data, columns = ['user', 'date', 'food', 'home'])
+data = [['luc', 20180707, '', 0,0], ['ana', 20180607, '', 10,0]]
+df = pd.DataFrame(data, columns = ['user', 'date', 'tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 channel = 'CBTCHEDGE'
 myCom = command.Command(file_csv)
@@ -91,8 +91,8 @@ class AddCommand(unittest.TestCase):
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707, 0,0], ['ana', 20180607, 10,0]]
-df = pd.DataFrame(data, columns = ['user', 'date', 'food', 'home'])
+data = [['luc', 20180707,'', 0,0], ['ana', 20180607,'', 10,0]]
+df = pd.DataFrame(data, columns = ['user', 'date','tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 
 # Read test data
