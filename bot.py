@@ -1,4 +1,3 @@
-#!/home/lucas/anaconda2/bin/python
 """
 Slack Bot class
 
