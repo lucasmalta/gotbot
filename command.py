@@ -17,16 +17,15 @@ class Command(object):
     """ Class for commands"""
     def __init__(self, *argv):
         """ Constructor """
-        self.root_folder = '/home/lucas/GIT/gotbot/'
         self.cat_file = 'categories.json'
         if argv:
             self.file_csv = argv[0]
         else:
-            self.file_csv = self.root_folder + 'gotbot.csv'
+            self.file_csv = 'gotbot.csv'
         self.myshop = shopframe.ShopFrame(self.file_csv)
         
         # Load json file with categories
-        with open(self.root_folder + self.cat_file) as f:   
+        with open(self.cat_file) as f:   
             self.data_cat = json.load(f)
 
  
@@ -63,14 +62,21 @@ class Command(object):
         if ('plot' in command) or ('plt' in command):
             self.plot(channel)
 
-        # Parse for the paid tag -- adding re.search to avioid matching 'unpaid'
-        match_paid = re.search(r'\bpaid\b', command)
-        if (match_paid):
+        # Parse for the set paid tag
+        if ('set paid' in command):
             response += self.set_paid_tag()
         
         # Parse for the upaid tag
-        if ('unpaid' in command):
+        if ('set unpaid' in command):
             response += self.set_unpaid_tag()
+        
+        # Parse for the get paid tag
+        if ('get paid' in command) or ('show paid' in command):
+            response += self.get_paid_tag()
+        
+        # Parse for the upaid tag
+#        if ('get unpaid' in command) or ('show unpaid'):
+#            response += self.get_unpaid_tag()
      
         # Parse for help
         if ('help' in command):
@@ -159,6 +165,14 @@ class Command(object):
     def set_unpaid_tag(self):
         self.myshop.del_tag('_P')
         return "Setting everything to *unpaid*."
+    
+    def get_paid_tag(self):
+        result = self.myshop.get_tag('_P')
+        return "The *paid* months are: " + result
+    
+ #   def get_unpaid_tag(self):
+  #      result = self.myshop.get_not_tag('_P')
+   #     return "The *unpaid* months are: " + result
  
     def help(self):
         """ What do do when help keyword is found within command """
@@ -166,7 +180,8 @@ class Command(object):
         response += ', '.join(list(self.data_cat)) + '. '
         response += 'Here are a few examples of what you can do:\n\n\
                      *Add expense*\n -Food 300.\n -I spent 150 in a bar\n -300 in home\n\n\
-                     *View*\n -Total\n -Total this month \n -Total for 05/2018 \n -Total for me in July \n -plot '
+                     *View*\n -Total\n -Total this month \n -Total for 05/2018 \n -Total for me in July \n -plot\n\n\
+                     *Payment*\n -Set paid\n -Set unpaid\n -View paid'
           
              
         return response

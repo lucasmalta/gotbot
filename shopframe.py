@@ -27,7 +27,7 @@ class ShopFrame(object):
         """ Creates a new df with input data and append it to 
             current data frame.  
         """
-        temp_data = [user, int(date)] + [0]*len(self.types[2:])
+        temp_data = [user, int(date), ''] + [0]*len(self.types[3:])
         try:
             ind = self.types.index(typex)
         except ValueError:
@@ -82,3 +82,9 @@ class ShopFrame(object):
         self.df['tags'] = [x.replace(tag, '') for x in self.df['tags']]
         # Add to file
         self.df.to_csv(self.csv_file, index=False)
+    
+    def get_tag(self, tag):
+        """ Get a tag from the tags column - return date"""
+        full_dates = self.df['date'].loc[self.df['tags'].str.contains(tag)]
+        month_year = ', '.join(set([str(x)[0:6] for x in full_dates]))
+        return month_year

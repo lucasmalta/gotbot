@@ -16,7 +16,7 @@ import pandas as pd
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707, '', 0,0], ['ana', 20180607, '', 10,0]]
+data = [['luc', 20180707, '_P', 0,0], ['ana', 20180607, '', 10,0]]
 df = pd.DataFrame(data, columns = ['user', 'date', 'tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 channel = 'CBTCHEDGE'
@@ -43,46 +43,75 @@ class AddCommand(unittest.TestCase):
 
     def test_e_add_comm(self):
         """ Test empty """
-        self.assertEqual(myCom.handle_command('luc','house', channel), '<@luc>: Sorry, you need to provide a quantity.')
+        self.assertEqual(myCom.handle_command('luc','house', channel),\
+       '<@luc>: Sorry, you need to provide a quantity.')
     
     def test_f_total(self):
         """ Total """
-        self.assertEqual(myCom.handle_command('luc','total', channel), '<@luc>: \nGrand total (*ALL DATA*):\nfood    30\nhome    15\n')
+        self.assertEqual(myCom.handle_command('luc','total', channel),\
+        '<@luc>: \nGrand total (*ALL DATA*):\nfood    30\nhome    15\n')
     
     def test_g_total_july(self):
         """ Total july """
-        self.assertEqual(myCom.handle_command('luc','total july', channel), '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
+        self.assertEqual(myCom.handle_command('luc','total july', channel),\
+        '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
     
     def test_h_total_june(self):
         """ Total june """
-        self.assertEqual(myCom.handle_command('luc','total june', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+        self.assertEqual(myCom.handle_command('luc','total june', channel),\
+        '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
     
     def test_i_total_june2(self):
         """ Total june 06/2018 """
-        self.assertEqual(myCom.handle_command('luc','total 06/2018', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+        self.assertEqual(myCom.handle_command('luc','total 06/2018', channel),\
+        '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+    
     def test_j_total_june3(self):
         """ Total june 06/18 """
-        self.assertEqual(myCom.handle_command('luc','total 06/18', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+        self.assertEqual(myCom.handle_command('luc','total 06/18', channel),\
+        '<@luc>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
     
     def test_k_total_may(self):
         """ Total may 18 """
-        self.assertEqual(myCom.handle_command('luc','total may 18', channel), '<@luc>: \nTotal for *May*, *2018*\nfood    0.0\nhome    0.0\n')
+        self.assertEqual(myCom.handle_command('luc','total may 18', channel),\
+        '<@luc>: \nTotal for *May*, *2018*\nfood    0.0\nhome    0.0\n')
 
     def test_l_total_me_june(self):
         """ Total me June """
-        self.assertEqual(myCom.handle_command('ana','total me June', channel), '<@ana>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
-        self.assertEqual(myCom.handle_command('luc','total me june', channel), '<@luc>: \nTotal for *June*, *2018*\nfood    0.0\nhome    0.0\n')
+        self.assertEqual(myCom.handle_command('ana','total me June', channel),\
+        '<@ana>: \nTotal for *June*, *2018*\nfood    10\nhome     0\n')
+        self.assertEqual(myCom.handle_command('luc','total me june', channel),\
+        '<@luc>: \nTotal for *June*, *2018*\nfood    0.0\nhome    0.0\n')
     
     def test_m_total_me_july(self):
         """ Total me July """
-        self.assertEqual(myCom.handle_command('ana','total me july', channel), '<@ana>: \nTotal for *July*, *2018*\nfood    0.0\nhome    0.0\n')
-        self.assertEqual(myCom.handle_command('luc','total me july', channel), '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
+        self.assertEqual(myCom.handle_command('ana','total me july', channel),\
+        '<@ana>: \nTotal for *July*, *2018*\nfood    0.0\nhome    0.0\n')
+        self.assertEqual(myCom.handle_command('luc','total me july', channel),\
+        '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
 
     def test_n_total_me(self):
         """ Total me """
-        self.assertEqual(myCom.handle_command('luc','total me', channel), '<@luc>: \nGrand total (*ALL DATA*):\nfood    20\nhome    15\n')
-        self.assertEqual(myCom.handle_command('ana','total me', channel), '<@ana>: \nGrand total (*ALL DATA*):\nfood    10\nhome     0\n')
+        self.assertEqual(myCom.handle_command('luc','total me', channel),\
+        '<@luc>: \nGrand total (*ALL DATA*):\nfood    20\nhome    15\n')
+        self.assertEqual(myCom.handle_command('ana','total me', channel),\
+        '<@ana>: \nGrand total (*ALL DATA*):\nfood    10\nhome     0\n')
 
+    def test_o_total_me(self):
+        """ Get paid """
+        self.assertEqual(myCom.handle_command('luc','show paid', channel),\
+        '<@luc>: The *paid* months are: 201807')
+    
+    def test_p_total_me(self):
+        """ Get paid """
+        self.assertEqual(myCom.handle_command('luc','set paid', channel),\
+        '<@luc>: Setting everything to *paid*.')
+        self.assertEqual(myCom.handle_command('luc','show paid', channel),\
+        '<@luc>: The *paid* months are: 201807, 201806')
+        self.assertEqual(myCom.handle_command('luc','set unpaid', channel),\
+        '<@luc>: Setting everything to *unpaid*.')
+        self.assertEqual(myCom.handle_command('luc','show paid', channel),\
+        '<@luc>: The *paid* months are: ')
 
 
 ##############################
@@ -91,7 +120,7 @@ class AddCommand(unittest.TestCase):
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707,'', 0,0], ['ana', 20180607,'', 10,0]]
+data = [['luc', 20180707,'_P', 0,0], ['ana', 20180607,'', 10,0]]
 df = pd.DataFrame(data, columns = ['user', 'date','tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 
@@ -172,6 +201,20 @@ class AddPoint(unittest.TestCase):
         t = myshop.get_grand_total(user='luc')
         self.assertEqual(t['home'], 25)
         self.assertEqual(t['food'], 0)
+
+    def test_q_get_tag(self):
+        t = myshop.get_tag('_P')
+        self.assertEqual(t, '201807')
+    
+    def test_r_set_tag(self):
+        t = myshop.set_tag('_P')
+        t = myshop.get_tag('_P')
+        self.assertEqual(t, '201807, 201806')
+    
+    def test_s_del_tag(self):
+        t = myshop.del_tag('_P')
+        t = myshop.get_tag('_P')
+        self.assertEqual(t, '')
 
 
 
