@@ -71,12 +71,8 @@ class Command(object):
             response += self.set_unpaid_tag()
         
         # Parse for the get paid tag
-        if ('get paid' in command) or ('show paid' in command):
+        if ('get paid' in command) or ('show paid' in command) or ('view paid' in command):
             response += self.get_paid_tag()
-        
-        # Parse for the upaid tag
-#        if ('get unpaid' in command) or ('show unpaid'):
-#            response += self.get_unpaid_tag()
      
         # Parse for help
         if ('help' in command):
