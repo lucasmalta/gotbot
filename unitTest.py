@@ -9,6 +9,7 @@ import unittest
 import command
 import shopframe
 import pandas as pd
+import datetime
 
 ##############################
 #  COMMAND TEST PROCEDURE    #
@@ -16,10 +17,13 @@ import pandas as pd
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707, '_P', 0,0], ['ana', 20180607, '', 10,0]]
-df = pd.DataFrame(data, columns = ['user', 'date', 'tags', 'food', 'home'])
+data = [['luc', 'home 0', 20180707, '_P', 0,0], ['ana', 'food 10',20180607, '', 10,0]]
+df = pd.DataFrame(data, columns = ['user', 'comm', 'date', 'tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 channel = 'CBTCHEDGE'
+timenow = datetime.date.today()
+monthnow = timenow.strftime("%B")
+daynow = str(timenow.year) + '{:02d}'.format(timenow.month) + '{:02d}'.format(timenow.day)
 myCom = command.Command(file_csv)
 
 class AddCommand(unittest.TestCase):
@@ -51,10 +55,10 @@ class AddCommand(unittest.TestCase):
         self.assertEqual(myCom.handle_command('luc','total', channel),\
         '<@luc>: \nGrand total (*ALL DATA*):\nfood    30\nhome    15\n')
     
-    def test_g_total_july(self):
-        """ Total july """
-        self.assertEqual(myCom.handle_command('luc','total july', channel),\
-        '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
+    def test_g_total_current(self):
+        """ Total current month """
+        self.assertEqual(myCom.handle_command('luc','total ' + monthnow, channel),\
+        '<@luc>: \nTotal for *' + monthnow + '*, *2018*\nfood    20\nhome    15\n')
     
     def test_h_total_june(self):
         """ Total june """
@@ -83,12 +87,12 @@ class AddCommand(unittest.TestCase):
         self.assertEqual(myCom.handle_command('luc','total me june', channel),\
         '<@luc>: \nTotal for *June*, *2018*\nfood    0.0\nhome    0.0\n')
     
-    def test_m_total_me_july(self):
-        """ Total me July """
-        self.assertEqual(myCom.handle_command('ana','total me july', channel),\
-        '<@ana>: \nTotal for *July*, *2018*\nfood    0.0\nhome    0.0\n')
-        self.assertEqual(myCom.handle_command('luc','total me july', channel),\
-        '<@luc>: \nTotal for *July*, *2018*\nfood    20\nhome    15\n')
+    def test_m_total_me_current(self):
+        """ Total me current month """
+        self.assertEqual(myCom.handle_command('ana','total me ' + monthnow, channel),\
+        '<@ana>: \nTotal for *' + monthnow + '*, *2018*\nfood    0.0\nhome    0.0\n')
+        self.assertEqual(myCom.handle_command('luc','total me ' + monthnow, channel),\
+        '<@luc>: \nTotal for *' + monthnow  + '*, *2018*\nfood    20\nhome    15\n')
 
     def test_n_total_me(self):
         """ Total me """
@@ -97,21 +101,26 @@ class AddCommand(unittest.TestCase):
         self.assertEqual(myCom.handle_command('ana','total me', channel),\
         '<@ana>: \nGrand total (*ALL DATA*):\nfood    10\nhome     0\n')
 
-    def test_o_total_me(self):
+    def test_o_show_paid(self):
         """ Get paid """
         self.assertEqual(myCom.handle_command('luc','show paid', channel),\
-        '<@luc>: The *paid* months are: 201807')
+        '<@luc>: Everything is paid until (and including): 20180707')
     
-    def test_p_total_me(self):
+    def test_p_getset_paid(self):
         """ Get paid """
         self.assertEqual(myCom.handle_command('luc','set paid', channel),\
         '<@luc>: Setting everything to *paid*.')
         self.assertEqual(myCom.handle_command('luc','show paid', channel),\
-        '<@luc>: The *paid* months are: 201807, 201806')
+        '<@luc>: Everything is paid until (and including): ' + daynow)
         self.assertEqual(myCom.handle_command('luc','set unpaid', channel),\
         '<@luc>: Setting everything to *unpaid*.')
         self.assertEqual(myCom.handle_command('luc','show paid', channel),\
-        '<@luc>: The *paid* months are: ')
+        '<@luc>: Everything is paid until (and including): ')
+    
+    def test_q_show_comm(self):
+        """ Get paid """
+        self.assertEqual(myCom.handle_command('luc','show comm', channel),\
+        '<@luc>: Entries for the *current* month: \nfood 5\nfood 15\nhouse 15\nhouse 0')
 
 
 ##############################
@@ -120,8 +129,8 @@ class AddCommand(unittest.TestCase):
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 20180707,'_P', 0,0], ['ana', 20180607,'', 10,0]]
-df = pd.DataFrame(data, columns = ['user', 'date','tags', 'food', 'home'])
+data = [['luc', 'home 0', 20180707,'_P', 0,0], ['ana', 'food 10', 20180607,'', 10,0]]
+df = pd.DataFrame(data, columns = ['user', 'comm', 'date','tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 
 # Read test data
@@ -131,7 +140,7 @@ class AddPoint(unittest.TestCase):
     """ Test case for shopframe.py -- Adding data """
   
     def test_a_add_point(self):
-        self.assertEqual(myshop.add_data_point('luc','food', 20180705, 10),0)
+        self.assertEqual(myshop.add_data_point('luc', 'food 10' ,'food', 20180705, 10),0)
 
     def test_b__get_grand_total(self):
         t = myshop.get_grand_total()
@@ -139,7 +148,7 @@ class AddPoint(unittest.TestCase):
         self.assertEqual(t['home'], 0)
     
     def test_c_add_point(self):
-        self.assertEqual(myshop.add_data_point('luc','home', 20180705, 25),0)
+        self.assertEqual(myshop.add_data_point('luc', 'home 25' ,'home', 20180705, 25),0)
     
     def test_d_get_grand_total(self):
         t = myshop.get_grand_total()
@@ -147,7 +156,7 @@ class AddPoint(unittest.TestCase):
         self.assertEqual(t['home'], 25)
 
     def test_e_add_point(self):
-        self.assertEqual(myshop.add_data_point('luc','food', 20180705, 10),0)
+        self.assertEqual(myshop.add_data_point('luc', 'food 10','food', 20180705, 10),0)
     
     def test_f_get_grand_total(self):
         t = myshop.get_grand_total()
@@ -155,7 +164,7 @@ class AddPoint(unittest.TestCase):
         self.assertEqual(t['home'], 25)
 
     def test_g_add_point(self):
-        self.assertEqual(myshop.add_data_point('luc','food', 20180705, -20),0)
+        self.assertEqual(myshop.add_data_point('luc', 'food -20','food', 20180705, -20),0)
     
     def test_h_get_grand_total(self):
         t = myshop.get_grand_total()
@@ -204,12 +213,12 @@ class AddPoint(unittest.TestCase):
 
     def test_q_get_tag(self):
         t = myshop.get_tag('_P')
-        self.assertEqual(t, '201807')
+        self.assertEqual(t, '20180707')
     
     def test_r_set_tag(self):
         t = myshop.set_tag('_P')
         t = myshop.get_tag('_P')
-        self.assertEqual(t, '201807, 201806')
+        self.assertEqual(t, '20180707')
     
     def test_s_del_tag(self):
         t = myshop.del_tag('_P')
