@@ -2,6 +2,7 @@
 Data frame for handling shop data
 
 """
+import datetime
 import numpy as np
 import pandas as pd
 
@@ -23,11 +24,12 @@ class ShopFrame(object):
         except IOError: 
             print "IO Error: Cannot open file", self.csv_file
 
-    def add_data_point(self, user, typex, date, ammount):
+    def add_data_point(self, user, comm, typex, date, ammount):
         """ Creates a new df with input data and append it to 
             current data frame.  
         """
-        temp_data = [user, int(date), ''] + [0]*len(self.types[3:])
+        # types[4:] excludes User/Comm/Date/Tags
+        temp_data = [user, comm, int(date), ''] + [0]*len(self.types[4:])
         try:
             ind = self.types.index(typex)
         except ValueError:
@@ -44,11 +46,12 @@ class ShopFrame(object):
         """ Get grand frame total """
         if ('user' in kwargs):
             mask = (self.df['user'] == kwargs['user'])
-            grand_total = self.df.loc[mask, self.types[3:]].sum()
+            # types[4:] excludes User/Comm/Date/Tags
+            grand_total = self.df.loc[mask, self.types[4:]].sum()
         else:    
             # Total from the columns which have shopping ammounts
-            # types[3:] excludes User/Date/Tags
-            grand_total = self.df.loc[:, self.types[3:]].sum()
+            # types[4:] excludes User/Comm/Date/Tags
+            grand_total = self.df.loc[:, self.types[4:]].sum()
         return grand_total
     
     def get_total_by_date(self, **kwargs):
@@ -67,8 +70,8 @@ class ShopFrame(object):
             return "ERROR in slicing DF. Need to specify min_date and max_date"
         new_df = self.df.loc[mask]
         # Total from the columns which have shopping ammounts
-        # types[3:] excludes User/Date/Tags
-        grand_total = new_df.loc[:, self.types[3:]].sum()
+        # types[4:] excludes User/Comm/Date/Tags
+        grand_total = new_df.loc[:, self.types[4:]].sum()
         return grand_total
     
     def set_tag(self, tag):
@@ -86,5 +89,18 @@ class ShopFrame(object):
     def get_tag(self, tag):
         """ Get a tag from the tags column - return date"""
         full_dates = self.df['date'].loc[self.df['tags'].str.contains(tag)]
-        month_year = ', '.join(set([str(x)[0:6] for x in full_dates]))
-        return month_year
+        #month_year = ', '.join(set([str(x)[0:6] for x in full_dates]))
+        if len(full_dates) > 0:
+            return str(max(full_dates))
+        else:
+            return ''
+    
+    def get_comm(self):
+        """ Get a list of commands for current month """
+        timenow = datetime.date.today()
+        min_date = str(timenow.year) + '{:02d}'.format(timenow.month) + '01'
+        max_date = str(timenow.year) + '{:02d}'.format(timenow.month) + '31'
+        mask = (self.df['date'] >= int(min_date)) &\
+               (self.df['date'] <= int(max_date))
+        comm = self.df['comm'].loc[mask]
+        return comm
