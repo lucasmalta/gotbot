@@ -175,7 +175,7 @@ class Command(object):
     
     def get_comm(self):
         result = '\n'.join(self.myshop.get_comm())
-        return "Entries for the *current* month: " + result
+        return "Entries for the *current* month:" + result
     
     def help(self):
         """ What do do when help keyword is found within command """
