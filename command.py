@@ -46,7 +46,8 @@ class Command(object):
                 arg_user = user
             if ('month' in command) or ('current' in command) or ('now' in command):
                 # Total for present month
-                response += self.total_by_month(command, mydate = datetime.date.today(), myuser = arg_user)
+                response += self.total_by_month(command, mydate = datetime.date.today(),\
+                myuser = arg_user)
             else:
                 # Look for specific dates
                 # Adding ' ' as a workaround for a bug in datefinder
@@ -56,7 +57,8 @@ class Command(object):
                 except:
                     response += self.grand_total(myuser=arg_user)
                 else:
-                    response += self.total_by_month(command, mydate = date_in, myuser = arg_user)
+                    response += self.total_by_month(command, mydate = date_in,\
+                    myuser = arg_user)
         
         # Parse for plot
         if ('plot' in command) or ('plt' in command):
@@ -73,6 +75,10 @@ class Command(object):
         # Parse for the get paid tag
         if ('get paid' in command) or ('show paid' in command) or ('view paid' in command):
             response += self.get_paid_tag()
+        
+        # Parse for the get comm
+        if ('show comm' in command) or ('list comm' in command) or ('view comm' in command):
+            response += self.get_comm()
      
         # Parse for help
         if ('help' in command):
@@ -92,7 +98,7 @@ class Command(object):
         date = datetime.datetime.today().strftime('%Y%m%d')
         # Add amount to DataFrame
         try:
-            self.myshop.add_data_point(user, typex, date, amount)
+            self.myshop.add_data_point(user, command, typex, date, amount)
             new_total = self.myshop.get_grand_total()
         except ValueError:
             print "Error adding value to DF"
@@ -121,12 +127,13 @@ class Command(object):
        
         # Total for a specific data range AND user
         if ('myuser' in kwargs) and kwargs['myuser']:
-            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date, user=kwargs['myuser'])
+            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date,\
+            user=kwargs['myuser'])
         else:   
             total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date)
        
-        return '\nTotal for *' + kwargs['mydate'].strftime("%B") + '*, *' + str(kwargs['mydate'].year) + '*\n'\
-        + str(total).split('dtype')[0]
+        return '\nTotal for *' + kwargs['mydate'].strftime("%B") + '*, *' + \
+        str(kwargs['mydate'].year) + '*\n' + str(total).split('dtype')[0]
     
     def plot(self, channel):
         """ Plotting capability. It saves a matplotlib image file to disk and
@@ -164,15 +171,16 @@ class Command(object):
     
     def get_paid_tag(self):
         result = self.myshop.get_tag('_P')
-        return "The *paid* months are: " + result
+        return "Everything is paid until (and including): " + str(result)
     
- #   def get_unpaid_tag(self):
-  #      result = self.myshop.get_not_tag('_P')
-   #     return "The *unpaid* months are: " + result
- 
+    def get_comm(self):
+        result = '\n'.join(self.myshop.get_comm())
+        return "Entries for the *current* month: \n" + result
+    
     def help(self):
         """ What do do when help keyword is found within command """
-        response = "I am here to help :smile:. Currently I support commands for the following categories: "
+        response = "I am here to help :smile:. Currently I support commands\
+        for the following categories: "
         response += ', '.join(list(self.data_cat)) + '. '
         response += 'Here are a few examples of what you can do:\n\n\
                      *Add expense*\n -Food 300.\n -I spent 150 in a bar\n -300 in home\n\n\
