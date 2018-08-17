@@ -174,8 +174,9 @@ class Command(object):
         return "Everything is paid until (and including): " + str(result)
     
     def get_comm(self):
-        result = '\n'.join(self.myshop.get_comm())
-        return "Entries for the *current* month:" + result
+        result = self.myshop.get_comm()
+        result = result.to_string()
+        return "Entries for the *current* month:\n" + result
     
     def help(self):
         """ What do do when help keyword is found within command """
