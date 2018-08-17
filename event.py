@@ -18,7 +18,7 @@ class Event:
          
         if events and len(events) > 0:
             for event in events:
-                #print event
+                print event
                 self.parse_event(event)
                  
     def parse_event(self, event):
