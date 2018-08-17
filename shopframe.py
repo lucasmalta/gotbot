@@ -103,4 +103,7 @@ class ShopFrame(object):
         mask = (self.df['date'] >= int(min_date)) &\
                (self.df['date'] <= int(max_date))
         comm = self.df['comm'].loc[mask]
+        # Remove empty entries
+        filt = comm != ""
+        comm = comm[filt]
         return comm
