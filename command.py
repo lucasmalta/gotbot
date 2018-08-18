@@ -185,7 +185,8 @@ class Command(object):
         response += 'Here are a few examples of what you can do:\n\n\
                      *Add expense*\n -Food 300.\n -I spent 150 in a bar\n -300 in home\n\n\
                      *View*\n -Total\n -Total this month \n -Total for 05/2018 \n -Total for me in July \n -plot\n\n\
-                     *Payment*\n -Set paid\n -Set unpaid\n -View paid'
+                     *Payment*\n -Set paid\n -Set unpaid\n -View paid\n\n\
+                     *Entries*\n -Show comm\n -List comm\n -View comm'
           
              
         return response
