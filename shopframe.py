@@ -3,7 +3,6 @@ Data frame for handling shop data
 
 """
 import datetime
-import numpy as np
 import pandas as pd
 
 class ShopFrame(object):
@@ -44,7 +43,7 @@ class ShopFrame(object):
 
     def get_grand_total(self, **kwargs):
         """ Get grand frame total """
-        if ('user' in kwargs):
+        if 'user' in kwargs:
             mask = (self.df['user'] == kwargs['user'])
             # types[4:] excludes User/Comm/Date/Tags
             grand_total = self.df.loc[mask, self.types[4:]].sum()
@@ -57,7 +56,7 @@ class ShopFrame(object):
     def get_total_by_date(self, **kwargs):
         """ Get frame total in a date range """
         if ('min_date' in kwargs) and ('max_date' in kwargs):
-            if ('user' in kwargs):
+            if 'user' in kwargs:
                 # Creates a filtered data frame for the specified data range and user
                 mask = (self.df['date'] >= int(kwargs['min_date'])) &\
                        (self.df['date'] <= int(kwargs['max_date'])) &\
