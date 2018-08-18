@@ -9,7 +9,6 @@ import datefinder
 import matplotlib.pyplot as plt
 import os
 import commands
-import sys
 import shopframe
 
 
@@ -25,8 +24,8 @@ class Command(object):
         self.myshop = shopframe.ShopFrame(self.file_csv)
         
         # Load json file with categories
-        with open(self.cat_file) as f:   
-            self.data_cat = json.load(f)
+        with open(self.cat_file) as catfile:   
+            self.data_cat = json.load(catfile)
 
  
     def handle_command(self, user, command, channel):
@@ -40,13 +39,13 @@ class Command(object):
                 response += self.add_amount(user, command, key)
       
         # Parse for total
-        if ('total' in command):
+        if 'total' in command:
             arg_user = ''
             if ('me' in command) or ('my' in command):
                 arg_user = user
             if ('month' in command) or ('current' in command) or ('now' in command):
                 # Total for present month
-                response += self.total_by_month(command, mydate = datetime.date.today(),\
+                response += self.total_by_month(mydate = datetime.date.today(),\
                 myuser = arg_user)
             else:
                 # Look for specific dates
@@ -57,7 +56,7 @@ class Command(object):
                 except:
                     response += self.grand_total(myuser=arg_user)
                 else:
-                    response += self.total_by_month(command, mydate = date_in,\
+                    response += self.total_by_month(mydate = date_in,\
                     myuser = arg_user)
         
         # Parse for plot
@@ -65,11 +64,11 @@ class Command(object):
             self.plot(channel)
 
         # Parse for the set paid tag
-        if ('set paid' in command):
+        if 'set paid' in command:
             response += self.set_paid_tag()
         
         # Parse for the upaid tag
-        if ('set unpaid' in command):
+        if 'set unpaid' in command:
             response += self.set_unpaid_tag()
         
         # Parse for the get paid tag
@@ -81,7 +80,7 @@ class Command(object):
             response += self.get_comm()
      
         # Parse for help
-        if ('help' in command):
+        if 'help' in command:
             response += self.help()
 
         #else:
@@ -99,7 +98,6 @@ class Command(object):
         # Add amount to DataFrame
         try:
             self.myshop.add_data_point(user, command, typex, date, amount)
-            new_total = self.myshop.get_grand_total()
         except ValueError:
             print "Error adding value to DF"
         else:
@@ -115,11 +113,11 @@ class Command(object):
             total = self.myshop.get_grand_total()
         return '\nGrand total (*ALL DATA*):\n' + str(total).split('dtype')[0]
     
-    def total_by_month(self, command, **kwargs):
+    def total_by_month(self, **kwargs):
         """ What do do when keyword "total" is found within command
             AND we have a date """
         # Total for a specific date range
-        if ('mydate' in kwargs):
+        if 'mydate' in kwargs:
             min_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '01'
             max_date = str(kwargs['mydate'].year) + '{:02d}'.format(kwargs['mydate'].month) + '31'
         else: 
@@ -144,17 +142,17 @@ class Command(object):
         D = total.to_dict()
         plt.bar(range(len(D)), D.values(), align='center', color='black')
         plt.xticks(range(len(D)), list(D.keys()))
-        plt.ylabel('SEK',fontsize=11)
-        plt.xlabel('Category',fontsize=11)
+        plt.ylabel('SEK', fontsize=11)
+        plt.xlabel('Category', fontsize=11)
         plt.savefig('imgs/foo.png')
         
         # Uploading to Slack
         verif_token = os.getenv('MYTOKEN')
-        cmd = 'curl -F file=@' + self.root_folder + 'imgs/foo.png -F \
+        cmd = 'curl -F file=@' + '~/imgs/foo.png -F \
         channels=' + channel + ' -H "Authorization: Bearer ' + verif_token + '" \
         https://slack.com/api/files.upload'
         (status, output) = commands.getstatusoutput(cmd)
-        match = re.search(r'"ok":(\w+),',output)
+        match = re.search(r'"ok":(\w+),', output)
         if match:
             if 'true' not in match.group(1): 
                 return 'Could not plot, sorry'
