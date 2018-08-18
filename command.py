@@ -172,7 +172,8 @@ class Command(object):
         return "Everything is paid until (and including): " + str(result)
     
     def get_comm(self):
-        result = '\n'.join(self.myshop.get_comm())
+        #result = '\n'.join(self.myshop.get_comm())
+        result = self.myshop.get_comm().to_string(index=False, header=False)
         return "Entries for the *current* month:\n\n" + result
     
     def help(self):
