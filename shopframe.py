@@ -101,8 +101,9 @@ class ShopFrame(object):
         max_date = str(timenow.year) + '{:02d}'.format(timenow.month) + '31'
         mask = (self.df['date'] >= int(min_date)) &\
                (self.df['date'] <= int(max_date))
-        comm = self.df['comm'].loc[mask]
+        #comm = self.df['comm'].loc[mask]
+        comm = self.df[['date','comm']].loc[mask]
         # Remove empty entries
-        filt = comm != ""
+        filt = comm['comm'] != ""
         comm = comm[filt]
         return comm
