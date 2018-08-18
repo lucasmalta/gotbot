@@ -120,7 +120,7 @@ class AddCommand(unittest.TestCase):
     def test_q_show_comm(self):
         """ Get paid """
         self.assertEqual(myCom.handle_command('luc','show comm', channel),\
-        '<@luc>: Entries for the *current* month: \nfood 5\nfood 15\nhouse 15\nhouse 0')
+        '<@luc>: Entries for the *current* month:\n\nfood 5\nfood 15\nhouse 15\nhouse 0')
 
 
 ##############################
