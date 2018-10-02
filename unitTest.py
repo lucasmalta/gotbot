@@ -1,4 +1,4 @@
-#!/home/lucas/anaconda2/bin/python
+#!/usr/bin/env python
 """
 Unit testing module
 Test procedure

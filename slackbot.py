@@ -1,4 +1,4 @@
-#!/home/lucas/anaconda2/bin/python
+#!/usr/bin/env python
 """
 Slack Bot while loop
 
