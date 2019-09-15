@@ -1,0 +1,54 @@
+<@luc>: OK! Adding 5 in food.
+<@luc>: OK! Adding 15 in food.
+<@luc>: OK! Adding 15 in home.
+<@luc>: OK! Adding 0 in home.
+<@luc>: Sorry, you need to provide a quantity.
+<@luc>: 
+Grand total (*ALL DATA*):
+food    30
+home    15
+
+<@luc>: 
+Total for *July*, *2019*
+food    0.0
+home    0.0
+
+<@luc>: 
+Total for *July*, *2018*
+food    20
+home    15
+
+<@luc>: 
+Total for *June*, *2018*
+food    10
+home     0
+
+<@luc>: 
+Total for *June*, *2018*
+food    10
+home     0
+
+<@luc>: 
+Total for *May*, *2018*
+food    0.0
+home    0.0
+
+<@ana>: 
+Total for *June*, *2018*
+food    10
+home     0
+
+<@luc>: 
+Total for *June*, *2018*
+food    0.0
+home    0.0
+
+<@ana>: 
+Total for *July*, *2018*
+food    0.0
+home    0.0
+
+<@luc>: 
+Total for *July*, *2018*
+food    20
+home    15
