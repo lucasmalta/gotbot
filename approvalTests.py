@@ -49,7 +49,7 @@ printerFun = myCom.handle_command('luc','food 5', channel) + '\n' + \
            myCom.handle_command('ana','total me June ' + yearnow, channel) + '\n' + \
            myCom.handle_command('luc','total me june 2018', channel) + '\n' + \
            myCom.handle_command('ana','total me ' + monthnow + yearnow, channel) + '\n' + \
-           myCom.handle_command('luc','total me ' + monthnow + yearnow, channel)
+           myCom.handle_command('luc','total me C' + monthnow + yearnow, channel)
 
 class GettingStartedTest(unittest.TestCase):
     def setUp(self):
