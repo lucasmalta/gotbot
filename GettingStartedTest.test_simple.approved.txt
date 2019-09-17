@@ -15,8 +15,8 @@ home    0.0
 
 <@luc>: 
 Total for *July*, *2018*
-food    20
-home    15
+food    0
+home    0
 
 <@luc>: 
 Total for *June*, *2018*
@@ -50,5 +50,7 @@ home    0.0
 
 <@luc>: 
 Total for *July*, *2018*
-food    20
-home    15
+food    0
+home    0
+
+<@luc>: Everything is paid until (and including): 20180707
