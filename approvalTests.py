@@ -24,7 +24,7 @@ datetime.date.today.return_value = mock_today
 
 # Create test data
 file_csv = '~/GIT/gotbot/test.csv'
-data = [['luc', 'home 0', 20180707, '_P', 0,0], ['ana', 'food 10',20180607, '', 10,0]]
+data = [['luc', 'home 0', 20180707, '_P', 0,0], ['ana', 'food 10',20180607, '_P', 10,0]]
 df = pd.DataFrame(data, columns = ['user', 'comm', 'date', 'tags', 'food', 'home'])
 df.to_csv(file_csv, index_label=False)
 channel = 'CBTCHEDGE'
@@ -49,7 +49,9 @@ printerFun = myCom.handle_command('luc','food 5', channel) + '\n' + \
            myCom.handle_command('luc','total me june 2018', channel) + '\n' + \
            myCom.handle_command('ana','total me ' + monthnow + yearnow, channel) + '\n' + \
            myCom.handle_command('luc','total me' + monthnow + yearnow, channel) + '\n' + \
-           myCom.handle_command('luc','show paid', channel)
+           myCom.handle_command('ana','show paid', channel) + '\n' + \
+           myCom.handle_command('ana','food 15', channel) + '\n' + \
+           myCom.handle_command('ana','from paid', channel)
 
 class GettingStartedTest(unittest.TestCase):
     def setUp(self):

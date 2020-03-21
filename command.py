@@ -78,6 +78,10 @@ class Command(object):
         # Parse for the get comm
         if ('show comm' in command) or ('list comm' in command) or ('view comm' in command):
             response += self.get_comm()
+        
+        # Parse for from paid
+        if ('from paid' in command):
+            response += self.from_paid(myuser = user)
      
         # Parse for help
         if 'help' in command:
@@ -112,7 +116,8 @@ class Command(object):
         else:
             total = self.myshop.get_grand_total()
         return '\nGrand total (*ALL DATA*):\n' + str(total).split('dtype')[0]
-    
+   
+
     def total_by_month(self, **kwargs):
         """ What do do when keyword "total" is found within command
             AND we have a date """
@@ -175,7 +180,26 @@ class Command(object):
         #result = '\n'.join(self.myshop.get_comm())
         result = self.myshop.get_comm().to_string(index=False, header=False)
         return "Entries for the *current* month:\n\n" + result
-    
+   
+
+    def from_paid(self, **kwargs):
+        """ Total from last paid """
+        # Total for a specific date range
+        min_date1 = datefinder.find_dates(self.myshop.get_tag('_P'))
+        min_date2 = min_date1.next() 
+        min_date3 = min_date2 + datetime.timedelta(days=1)
+        min_date = str(min_date3.year) + '{:02d}'.format(min_date3.month) + '{:02d}'.format(min_date3.day) 
+        max_date = datetime.date.today()
+        max_date = str(max_date.year) + '{:02d}'.format(max_date.month) + '{:02d}'.format(max_date.day) 
+
+        # Total for a specific data range AND user
+        total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date,\
+        user=kwargs['myuser'])
+        return 'Total unpaid from for ' + kwargs['myuser'] + ' from: ' + min_date + ' to ' + max_date + \
+        '*\n' + str(total).split('dtype')[0]
+
+
+
     def help(self):
         """ What do do when help keyword is found within command """
         response = "I am here to help :smile:. Currently I support commands\
