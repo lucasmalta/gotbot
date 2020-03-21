@@ -41,7 +41,7 @@ printerFun = myCom.handle_command('luc','food 5', channel) + '\n' + \
            myCom.handle_command('luc','house 0', channel)  + '\n' + \
            myCom.handle_command('luc','house', channel)    + '\n' + \
            myCom.handle_command('luc','total ', channel)   + '\n' + \
-           myCom.handle_command('luc','total ' + monthnow, channel) + '\n' + \
+           #myCom.handle_command('luc','total ' + monthnow, channel) + '\n' + \
            myCom.handle_command('luc','total ' + monthnow + yearnow, channel) + '\n' + \
            myCom.handle_command('luc','total june' + yearnow, channel) + '\n' + \
            myCom.handle_command('luc','total 06/2018', channel) + '\n' + \
