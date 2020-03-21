@@ -48,4 +48,8 @@ Total for *July*, *2018*
 food    0
 home    0
 
-<@luc>: Everything is paid until (and including): 20180707
+<@ana>: Everything is paid until (and including): 20180707
+<@ana>: OK! Adding 15 in food.
+<@ana>: Total unpaid from for ana from: 20180708 to 20200321*
+food    15
+home     0
