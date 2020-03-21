@@ -50,6 +50,10 @@ home    0
 
 <@ana>: Everything is paid until (and including): 20180707
 <@ana>: OK! Adding 15 in food.
-<@ana>: Total unpaid from for ana from: 20180708 to 20200321*
+<@ana>: Total unpaid for ana from: 20180708 to 20200321*
 food    15
 home     0
+
+<@ana>: Grand total unpaid from: 20180708 to 20200321*
+food    35
+home    15

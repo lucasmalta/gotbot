@@ -51,6 +51,7 @@ printerFun = myCom.handle_command('luc','food 5', channel) + '\n' + \
            myCom.handle_command('luc','total me' + monthnow + yearnow, channel) + '\n' + \
            myCom.handle_command('ana','show paid', channel) + '\n' + \
            myCom.handle_command('ana','food 15', channel) + '\n' + \
+           myCom.handle_command('ana','from paid me', channel) + '\n' + \
            myCom.handle_command('ana','from paid', channel)
 
 class GettingStartedTest(unittest.TestCase):

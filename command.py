@@ -81,7 +81,10 @@ class Command(object):
         
         # Parse for from paid
         if ('from paid' in command):
-            response += self.from_paid(myuser = user)
+            arg_user = ''
+            if ('me' in command) or ('my' in command):
+                arg_user = user
+            response += self.from_paid(myuser = arg_user)
      
         # Parse for help
         if 'help' in command:
@@ -184,6 +187,7 @@ class Command(object):
 
     def from_paid(self, **kwargs):
         """ Total from last paid """
+
         # Total for a specific date range
         min_date1 = datefinder.find_dates(self.myshop.get_tag('_P'))
         min_date2 = min_date1.next() 
@@ -192,11 +196,16 @@ class Command(object):
         max_date = datetime.date.today()
         max_date = str(max_date.year) + '{:02d}'.format(max_date.month) + '{:02d}'.format(max_date.day) 
 
-        # Total for a specific data range AND user
-        total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date,\
-        user=kwargs['myuser'])
-        return 'Total unpaid from for ' + kwargs['myuser'] + ' from: ' + min_date + ' to ' + max_date + \
-        '*\n' + str(total).split('dtype')[0]
+        # Total for a specific user
+        if ('myuser' in kwargs) and kwargs['myuser']:
+            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date,\
+            user=kwargs['myuser'])
+            return 'Total unpaid for ' + kwargs['myuser'] + ' from: ' + min_date + ' to ' + max_date + \
+            '*\n' + str(total).split('dtype')[0]
+        else:   
+            total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date)
+            return 'Grand total unpaid from: ' + min_date + ' to ' + max_date + \
+            '*\n' + str(total).split('dtype')[0]
 
 
 
