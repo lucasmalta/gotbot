@@ -4,4 +4,4 @@ An experimentation with the Slack Real Time API for creating a bot to track mont
 
 Expenses are stored as a pandas data frame. Categories and keywords which trigger them are stored as a json file.
 
-Based on the work from Jamie Munro published at: <a href = https://code.tutsplus.com/articles/building-a-slack-bot-using-python--cms-29668>here</a>.
+Based on the work from Jamie Munro published at <a href = https://code.tutsplus.com/articles/building-a-slack-bot-using-python--cms-29668>here</a>.
