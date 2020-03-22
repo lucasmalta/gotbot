@@ -201,11 +201,11 @@ class Command(object):
             total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date,\
             user=kwargs['myuser'])
             return 'Total unpaid for ' + kwargs['myuser'] + ' from: ' + min_date + ' to ' + max_date + \
-            '*\n' + str(total).split('dtype')[0]
+            '\n' + str(total).split('dtype')[0]
         else:   
             total = self.myshop.get_total_by_date(min_date=min_date, max_date=max_date)
             return 'Grand total unpaid from: ' + min_date + ' to ' + max_date + \
-            '*\n' + str(total).split('dtype')[0]
+            '\n' + str(total).split('dtype')[0]
 
 
 
